@@ -3,6 +3,11 @@ name: ci
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      since:
+        description: 'Test packages changed since this ref (default: last successful run)'
+        required: false
 
 permissions:
   contents: read
@@ -32,7 +37,7 @@ jobs:
       - uses: ./.github/actions/what-changed
         id: set-packages
         with:
-          since: ${{ steps.setSHAs.outputs.base }}
+          since: ${{ inputs.since || steps.setSHAs.outputs.base }}
 
   build:
     runs-on: ubuntu-latest
